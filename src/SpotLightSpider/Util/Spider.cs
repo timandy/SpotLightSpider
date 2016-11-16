@@ -11,6 +11,7 @@ namespace SpotLightSpider.Util
 {
     public class Spider
     {
+        private const string URL = "http://arc.msn.com/v3/Delivery/Cache?fmt=json&rafb=0&ctry=CN&lc=zh-Hans-CN&pid=";
         private static object m_Lock = new object();
         private static string m_InterfacesPath = FilePathUtil.GetAbsolutePath("interfaces.txt");
         private static string m_LogPath = FilePathUtil.GetAbsolutePath("error.log");
@@ -244,7 +245,7 @@ namespace SpotLightSpider.Util
                     DownloadNext(client, result);
                 };
                 //开始请求
-                client.DownloadStringAsync(new Uri("http://arc.msn.com/v3/Delivery/Cache?fmt=json&rafb=0&ctry=CN&lc=zh-Hans-CN&pid=" + result.pid));
+                client.DownloadStringAsync(new Uri(URL + result.pid));
             }
             catch (Exception exp)
             {
