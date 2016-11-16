@@ -11,19 +11,12 @@ namespace SpotLightSpider.Util
 {
     public class Spider
     {
+        private const string URL = "http://arc.msn.com/v3/Delivery/Cache?fmt=json&rafb=0&ctry=CN&lc=zh-Hans-CN&pid=";
         private static object m_Lock = new object();
         private static string m_InterfacesPath = FilePathUtil.GetAbsolutePath("interfaces.txt");
         private static string m_LogPath = FilePathUtil.GetAbsolutePath("error.log");
         private static string m_DownloadPath = FilePathUtil.GetAbsolutePath("download");
         private static SortedSet<int> m_Interfaces;
-
-        public static string LogPath
-        {
-            get
-            {
-                return m_LogPath;
-            }
-        }
         public static SortedSet<int> Interfaces
         {
             get
@@ -48,6 +41,34 @@ namespace SpotLightSpider.Util
             }
         }
 
+        //删除日志
+        public static void DeleteLog()
+        {
+            try
+            {
+                File.Delete(m_LogPath);
+            }
+            catch
+            {
+            }
+        }
+
+        //删除缓存
+        public static void DeleteTemp()
+        {
+            DirectoryInfo download = new DirectoryInfo(m_DownloadPath);
+            if (!download.Exists)
+                return;
+
+            var files = download.VisitFiles(null, file => file.Name.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase));
+            foreach (FileInfo file in files)
+            {
+                try { file.Delete(); }
+                catch { }
+            }
+        }
+
+        //扫描服务
         public static void ScanInterface(Result result)
         {
             try
@@ -122,6 +143,7 @@ namespace SpotLightSpider.Util
             }
         }
 
+        //下载
         public static void Download(Result result)
         {
             try
@@ -198,14 +220,23 @@ namespace SpotLightSpider.Util
                     }
                     //
                     Img current = result.imgs[result.index];
-                    if (!File.Exists(current.path))
+                    if (!File.Exists(current.temp))
                     {
                         WriteError(result, "下载 " + current.u + " 失败");
                         return;
                     }
-                    if (new FileInfo(current.path).Length.ToString() != current.fileSize)
+                    if (new FileInfo(current.temp).Length.ToString() != current.fileSize)
                     {
                         WriteError(result, "校验 " + current.u + " 失败");
+                        return;
+                    }
+                    try
+                    {
+                        File.Move(current.temp, current.path);
+                    }
+                    catch
+                    {
+                        WriteError(result, "重命名 " + current.u + " 失败");
                         return;
                     }
                     WriteInfo(result, "已下载 " + current.u);
@@ -214,7 +245,7 @@ namespace SpotLightSpider.Util
                     DownloadNext(client, result);
                 };
                 //开始请求
-                client.DownloadStringAsync(new Uri("http://arc.msn.com/v3/Delivery/Cache?fmt=json&rafb=0&ctry=CN&lc=zh-Hans-CN&pid=" + result.pid));
+                client.DownloadStringAsync(new Uri(URL + result.pid));
             }
             catch (Exception exp)
             {
@@ -222,6 +253,7 @@ namespace SpotLightSpider.Util
             }
         }
 
+        //下载下一个
         public static void DownloadNext(WebClient client, Result result)
         {
             while (true)
@@ -238,17 +270,23 @@ namespace SpotLightSpider.Util
                 if (File.Exists(current.path) && new FileInfo(current.path).Length.ToString() == current.fileSize)
                     continue;
 
+                //缓存
+                if (File.Exists(current.temp))
+                    continue;
+
                 //下载
-                client.DownloadFileAsync(new Uri(current.u), current.path);
+                client.DownloadFileAsync(new Uri(current.u), current.temp);
                 return;
             }
         }
 
+        //写信息日志
         public static void WriteInfo(Result result, object msg)
         {
             Console.WriteLine(string.Format("{0}\r\n{1}", result.pid, msg));
         }
 
+        //写错误日志
         public static void WriteError(Result result, object msg)
         {
             lock (m_Lock)
