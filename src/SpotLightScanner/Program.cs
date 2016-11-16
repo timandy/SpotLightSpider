@@ -1,17 +1,17 @@
 ﻿using System;
-using System.IO;
 using SpotLightSpider.Model;
 using SpotLightSpider.Util;
 
 namespace SpotLightScanner
 {
+    //扫描
     class Program
     {
         static void Main(string[] args)
         {
-            //删除日志
-            try { File.Delete(Spider.LogPath); }
-            catch { }
+            //准备
+            Spider.DeleteLog();
+            Spider.DeleteTemp();
 
             //扫描
             for (int i = 200000; i <= 300000; i++)

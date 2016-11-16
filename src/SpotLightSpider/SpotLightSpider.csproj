@@ -50,6 +50,7 @@
     <Compile Include="Model\Result.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\DirectoryInfoEx.cs" />
     <Compile Include="Util\FilePathUtil.cs" />
     <Compile Include="Util\JsonSerializer.cs" />
     <Compile Include="Util\Spider.cs" />

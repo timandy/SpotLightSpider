@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using SpotLightSpider.Model;
 using SpotLightSpider.Util;
 
@@ -10,9 +9,9 @@ namespace SpotLightSpider
     {
         static void Main(string[] args)
         {
-            //删除日志
-            try { File.Delete(Spider.LogPath); }
-            catch { }
+            //准备
+            Spider.DeleteLog();
+            Spider.DeleteTemp();
 
             //下载 
             while (true)
