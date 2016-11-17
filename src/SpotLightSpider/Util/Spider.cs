@@ -155,7 +155,7 @@ namespace SpotLightSpider.Util
                 {
                     if (e.Error != null)
                     {
-                        WriteError(result, e.Error);
+                        WriteError(result, "访问服务失败:" + e.Error);
                         return;
                     }
                     //
@@ -191,18 +191,28 @@ namespace SpotLightSpider.Util
                         }
                         //
                         Img landscape = itemReal.ad.image_fullscreen_001_landscape;
+                        string folder = null;
                         if (landscape != null)
                         {
-                            landscape.SetPath(m_DownloadPath);
+                            int nameStart = landscape.u.LastIndexOf(".com/") + 5;
+                            int nameEnd = landscape.u.LastIndexOf("/");
+                            folder += landscape.u.Substring(nameStart, nameEnd - nameStart);
                             result.imgs.Add(landscape);
                         }
+                        folder += "-";
                         //
                         Img portrait = itemReal.ad.image_fullscreen_001_portrait;
                         if (portrait != null)
                         {
-                            portrait.SetPath(m_DownloadPath);
+                            int nameStart = portrait.u.LastIndexOf(".com/") + 5;
+                            int nameEnd = portrait.u.LastIndexOf("/");
+                            folder += portrait.u.Substring(nameStart, nameEnd - nameStart);
                             result.imgs.Add(portrait);
+                            portrait.SetPath(m_DownloadPath, folder);
                         }
+                        //
+                        if (landscape != null)
+                            landscape.SetPath(m_DownloadPath, folder);
                     }
                     if (result.imgs.Count <= 0)
                         return;
@@ -215,7 +225,7 @@ namespace SpotLightSpider.Util
                 {
                     if (e.Error != null)
                     {
-                        WriteError(result, e.Error);
+                        WriteError(result, "下载图片失败:" + e.Error);
                         return;
                     }
                     //
