@@ -17,14 +17,15 @@ namespace SpotLightSpider.Model
 
         public string temp { get; private set; }
 
-        public void SetPath(string download)
+        public void SetPath(string download, string folder)
         {
             string trimHttp = this.u.Substring(this.u.IndexOf("//") + 2);
             string com = FilePathUtil.GetAbsolutePath(trimHttp.Substring(0, trimHttp.IndexOf(".com/") + 4).Replace("/", "@"), download);
-            this.path = FilePathUtil.GetAbsolutePath(trimHttp.Substring(trimHttp.IndexOf(".com/") + 5).Replace("/", "-"), com);
+            string sub = FilePathUtil.GetAbsolutePath(folder, com);
+            this.path = FilePathUtil.GetAbsolutePath(trimHttp.Substring(trimHttp.IndexOf(".com/") + 5).Replace("/", "-"), sub);
             this.temp = this.path + TMP;
-            if (!Directory.Exists(com))
-                Directory.CreateDirectory(com);
+            if (!Directory.Exists(sub))
+                Directory.CreateDirectory(sub);
         }
     }
 }
