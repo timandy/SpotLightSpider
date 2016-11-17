@@ -19,10 +19,8 @@ namespace SpotLightSpider.Model
 
         public void SetPath(string download, string folder)
         {
-            string trimHttp = this.u.Substring(this.u.IndexOf("//") + 2);
-            string com = FilePathUtil.GetAbsolutePath(trimHttp.Substring(0, trimHttp.IndexOf(".com/") + 4).Replace("/", "@"), download);
-            string sub = FilePathUtil.GetAbsolutePath(folder, com);
-            this.path = FilePathUtil.GetAbsolutePath(trimHttp.Substring(trimHttp.IndexOf(".com/") + 5).Replace("/", "-"), sub);
+            string sub = FilePathUtil.GetAbsolutePath(folder, download);
+            this.path = FilePathUtil.GetAbsolutePath(this.u.Substring(this.u.IndexOf(".com/") + 5).Replace("/", "-"), sub);
             this.temp = this.path + TMP;
             if (!Directory.Exists(sub))
                 Directory.CreateDirectory(sub);
