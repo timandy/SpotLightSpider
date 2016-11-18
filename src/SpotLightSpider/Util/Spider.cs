@@ -60,7 +60,7 @@ namespace SpotLightSpider.Util
             if (!download.Exists)
                 return;
 
-            var files = download.VisitFiles(null, file => file.Name.EndsWith(".tmp", StringComparison.OrdinalIgnoreCase));
+            var files = download.VisitFiles(null, file => file.Name.EndsWith(Img.TMP, StringComparison.OrdinalIgnoreCase));
             foreach (FileInfo file in files)
             {
                 try { file.Delete(); }
@@ -80,7 +80,7 @@ namespace SpotLightSpider.Util
                 {
                     if (e.Error != null)
                     {
-                        WriteError(result, e.Error);
+                        WriteError(result, "访问服务失败:" + e.Error);
                         return;
                     }
                     //
@@ -135,7 +135,7 @@ namespace SpotLightSpider.Util
                     client.Dispose();
                 };
                 //开始请求
-                client.DownloadStringAsync(new Uri("http://arc.msn.com/v3/Delivery/Cache?fmt=json&rafb=0&ctry=CN&lc=zh-Hans-CN&pid=" + result.pid));
+                client.DownloadStringAsync(new Uri(URL + result.pid));
             }
             catch (Exception exp)
             {
