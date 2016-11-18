@@ -194,9 +194,7 @@ namespace SpotLightSpider.Util
                         string folder = null;
                         if (landscape != null)
                         {
-                            int nameStart = landscape.u.LastIndexOf(".com/") + 5;
-                            int nameEnd = landscape.u.LastIndexOf("/");
-                            folder += landscape.u.Substring(nameStart, nameEnd - nameStart);
+                            folder += landscape.md5;
                             result.imgs.Add(landscape);
                         }
                         folder += "-";
@@ -204,9 +202,8 @@ namespace SpotLightSpider.Util
                         Img portrait = itemReal.ad.image_fullscreen_001_portrait;
                         if (portrait != null)
                         {
-                            int nameStart = portrait.u.LastIndexOf(".com/") + 5;
-                            int nameEnd = portrait.u.LastIndexOf("/");
-                            folder += portrait.u.Substring(nameStart, nameEnd - nameStart);
+
+                            folder += portrait.md5;
                             result.imgs.Add(portrait);
                             portrait.SetPath(m_DownloadPath, folder);
                         }
