@@ -17,10 +17,13 @@ namespace SpotLightSpider.Model
 
         public string temp { get; private set; }
 
+        private string _md5;
+        public string md5 { get { return this._md5 ?? (this._md5 = Hasher.MD5(this.sha256)); } }
+
         public void SetPath(string download, string folder)
         {
             string sub = FilePathUtil.GetAbsolutePath(folder, download);
-            this.path = FilePathUtil.GetAbsolutePath(this.u.Substring(this.u.IndexOf(".com/") + 5).Replace("/", "-"), sub);
+            this.path = FilePathUtil.GetAbsolutePath(this.md5 + this.u.Substring(this.u.LastIndexOf(".")), sub);
             this.temp = this.path + TMP;
             if (!Directory.Exists(sub))
                 Directory.CreateDirectory(sub);
